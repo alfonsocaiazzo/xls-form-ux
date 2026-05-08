@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XLS Form UX</title>
+  <meta name="description" content="XLS Form UX — browser-based editor for ODK XLSForms. Import, edit, validate and export .xlsx forms.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+  <link rel="alternate icon" href="assets/icons/favicon.ico">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- SheetJS — Excel read/write -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- App stylesheet -->
+  <link rel="stylesheet" href="css/builder.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- ══════════════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <img src="assets/icons/logo.png" alt="XLS Form UX" style="width:32px;height:32px;border-radius:6px;object-fit:contain;">
+        <div>
+          <div class="sidebar-title">XLS Form UX</div>
+        </div>
+      </div>
+      <div class="sidebar-sub">Web Editor for ODK XLSForms 
+      <a href="https://xlsform.org" target="_blank" rel="noopener">xlsform.org</a> · 
+      <a href="https://getodk.org" target="_blank" rel="noopener">OpenDataKit</a>
+      </div>
+    </div>
+
+    <div class="nav-section">Views</div>
+
+    <button class="nav-item active" onclick="showTab('survey')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M1 2h14v2H1zm0 4h14v2H1zm0 4h14v2H1z"/>
+      </svg>
+      Survey
+      <span class="nav-count" id="nc-survey">0</span>
+    </button>
+
+    <button class="nav-item" onclick="showTab('groups')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M2 2h4v4H2zm5 0h4v4H7zm5 0h2v4h-2zM2 8h4v4H2zm5 0h4v4H7z"/>
+      </svg>
+      Groups Tree
+      <span class="nav-count" id="nc-groups">0</span>
+    </button>
+
+    <button class="nav-item" onclick="showTab('choices')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="8" cy="8" r="3"/>
+      </svg>
+      Choices
+      <span class="nav-count" id="nc-choices">0</span>
+    </button>
+
+    <button class="nav-item" onclick="showTab('settings')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M7 1h2v2.27a5 5 0 011.4.58L12 2.27l1.41 1.41-1.6 1.6A5 5 0 0113 6.8V7H15v2h-2v.2a5 5 0 01-.59 1.52l1.6 1.6L12.59 13.7 11 12.1A5 5 0 018.73 13H8.8V15H6.8v-2a5 5 0 01-1.52-.59L3.7 14 2.27 12.59l1.6-1.6A5 5 0 013 9.2V9H1V7h2v-.2a5 5 0 01.59-1.52l-1.6-1.6L3.41 2.27l1.6 1.6A5 5 0 017 3.27V1zM8 5a3 3 0 100 6A3 3 0 008 5z"/>
+      </svg>
+      Settings
+    </button>
+
+    <button class="nav-item" onclick="showTab('validate')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M13 2L6 9 3 6 1.5 7.5l4.5 4.5 8.5-8.5z"/>
+      </svg>
+      Validate
+      <span class="nav-count" id="nc-errors" style="background:var(--sdg-red);display:none"></span>
+    </button>
+
+    <button class="nav-item" onclick="showTab('docs')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M4 1h8a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1zm1 3v1.5h6V4H5zm0 3v1.5h6V7H5zm0 3v1.5h4V10H5z"/>
+      </svg>
+      Documentation
+    </button>
+
+    <button class="nav-item" onclick="showTab('about')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 7v5M8 5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      About
+    </button>
+
+    <!-- Live stats (shown after a form is loaded) -->
+    <div class="sidebar-stats" id="sidebarStats" style="display:none">
+      <div class="nav-section" style="padding:0 0 6px">Form Stats</div>
+      <div class="stat-mini"><span>Questions</span>  <strong id="ss-q">—</strong></div>
+      <div class="stat-mini"><span>Groups</span>     <strong id="ss-g">—</strong></div>
+      <div class="stat-mini"><span>Selects</span>    <strong id="ss-s">—</strong></div>
+      <div class="stat-mini"><span>Choice lists</span><strong id="ss-c">—</strong></div>
+      <div class="stat-mini"><span>Languages</span>  <strong id="ss-l">—</strong></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <strong style="color:rgba(255,255,255,.5)">XLS Form UX</strong><br>
+      by <a href="https://hedera.online" target="_blank" rel="noopener">HEDERA Sustainable Solutions</a> <br>
+      Built with <a href="https://anthropic.com" target="_blank" rel="noopener">Claude · Anthropic</a>
+    </div>
+  </aside><!-- /.sidebar -->
+
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN AREA
+  ══════════════════════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">XLS Form UX</span>
+        <span class="form-pill" id="formPill">No form loaded</span>
+      </div>
+      <div class="topbar-actions">
+        <label class="btn" style="cursor:pointer">
+          ↑ Import XLS
+          <input type="file" id="fileInput" accept=".xlsx,.xls" aria-label="Import XLSForm file">
+        </label>
+        <button class="btn blue"    id="addRowBtn" disabled onclick="openEditModal(-1,true)">＋ Question</button>
+        <button class="btn primary" id="exportBtn" disabled onclick="exportXLSX()">↓ Export XLSX</button>
+      </div>
+    </div>
+
+    <!-- Editor tab bar -->
+    <div class="editor-tabs" id="editorTabs" role="tablist">
+      <button class="editor-tab active" id="et-survey"   role="tab" onclick="showTab('survey')">Survey</button>
+      <button class="editor-tab"        id="et-groups"   role="tab" onclick="showTab('groups')">Groups</button>
+      <button class="editor-tab"        id="et-choices"  role="tab" onclick="showTab('choices')">Choices</button>
+      <button class="editor-tab"        id="et-settings" role="tab" onclick="showTab('settings')">Settings</button>
+      <button class="editor-tab"        id="et-validate" role="tab" onclick="showTab('validate')">
+        Validate <span class="tab-badge hidden" id="tb-errors">0</span>
+      </button>
+      <button class="editor-tab"        id="et-docs"     role="tab" onclick="showTab('docs')">Docs</button>
+      <button class="editor-tab"        id="et-about"    role="tab" onclick="showTab('about')">About</button>
+    </div>
+
+
+    <!-- ── SURVEY panel ── -->
+    <div class="panel active" id="panel-survey" role="tabpanel">
+
+      <div class="toolbar-bar" id="surveyToolbar">
+        <!-- View toggle -->
+        <div class="view-toggle">
+          <button class="view-btn active" id="vb-table" onclick="setView('table')">☰ Table</button>
+          <button class="view-btn"        id="vb-cards" onclick="setView('cards')">⊞ Cards</button>
+        </div>
+        <div class="toolbar-sep"></div>
+
+        <!-- Search -->
+        <input type="search" class="search-input" id="searchInput"
+               placeholder="🔍  Search name / label…" aria-label="Search questions">
+        <div class="toolbar-sep"></div>
+
+        <!-- Filter chips -->
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="select">Selects</button>
+        <button class="filter-chip" data-filter="group">Groups</button>
+        <button class="filter-chip" data-filter="required">Required</button>
+        <button class="filter-chip" data-filter="logic">Has logic</button>
+        <div class="toolbar-sep"></div>
+
+        <!-- Hide meta toggle -->
+        <label class="hide-meta">
+          <input type="checkbox" id="hideMeta"> Hide meta
+        </label>
+        <div class="toolbar-sep"></div>
+
+        <!-- Row move / delete -->
+        <button class="btn-icon" onclick="moveRow(-1)" title="Move row up">▲</button>
+        <button class="btn-icon" onclick="moveRow(1)"  title="Move row down">▼</button>
+        <button class="btn-icon" onclick="deleteSelected()" title="Delete selected row"
+                style="color:var(--red)">✕</button>
+      </div>
+
+      <!-- Table / Cards render target -->
+      <div style="flex:1;overflow:auto" id="surveyViewContainer"></div>
+
+      <!-- Bottom status bar -->
+      <div class="info-bar hidden" id="infoBar">
+        <span>Showing <strong id="ib-vis">0</strong> / <strong id="ib-tot">0</strong> rows</span>
+        <span class="ib-sep">·</span>
+        <span>Selected: <strong id="ib-sel">—</strong></span>
+        <span class="ib-sep">·</span>
+        <span id="ib-langs"></span>
+      </div>
+
+      <!-- Add at end bar -->
+      <div class="add-row-bar hidden" id="addRowBar" onclick="openEditModal(-1,true)">
+        ＋ Add question at end
+      </div>
+    </div><!-- /#panel-survey -->
+
+
+    <!-- ── GROUPS panel ── -->
+    <div class="panel" id="panel-groups" role="tabpanel">
+      <div class="panel-scroll">
+        <div class="content">
+          <div class="groups-panel" id="groupsContent">
+            <div class="empty"><div class="empty-title">No form loaded</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── CHOICES panel ── -->
+    <div class="panel" id="panel-choices" role="tabpanel">
+      <div class="content" style="display:flex;flex-direction:column;flex:1;min-height:0;padding-bottom:0">
+        <div class="choices-layout">
+
+          <div class="choices-sidebar">
+            <div class="choices-sidebar-header">
+              Lists
+              <button class="btn-icon" onclick="newChoiceList()" title="New choice list">＋</button>
+            </div>
+            <div id="choicesNav"></div>
+          </div>
+
+          <div class="choices-main" id="choicesMain">
+            <div class="empty"><div class="empty-title">Select a list</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── SETTINGS panel ── -->
+    <div class="panel" id="panel-settings" role="tabpanel">
+      <div class="panel-scroll">
+        <div class="content">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Form Settings</span></div>
+            <div class="card-body">
+              <div class="settings-grid" id="settingsForm"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:16px;max-width:700px" id="settingsLangs">
+            <div class="card-header"><span class="card-title">Detected Languages</span></div>
+            <div class="card-body" id="settingsLangsBody">
+              <span style="color:var(--text3);font-size:12px">Load a form to detect languages.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── VALIDATE panel ── -->
+    <div class="panel" id="panel-validate" role="tabpanel">
+      <div class="panel-scroll">
+        <div class="content">
+          <div class="stats-row" id="valStats" style="display:none"></div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Validation Results</span>
+              <button class="btn primary" onclick="runValidation()">▶ Run Now</button>
+            </div>
+            <div class="card-body">
+              <div class="validation-list" id="validationList">
+                <div class="empty"><div class="empty-title">Click "Run Now"</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── DOCS panel ── -->
+    <div class="panel" id="panel-docs" role="tabpanel">
+      <div class="panel-scroll">
+        <div class="content" style="max-width:900px" id="docsContent"></div>
+      </div>
+    </div>
+
+
+    <!-- ── ABOUT panel ── -->
+    <div class="panel" id="panel-about" role="tabpanel">
+      <div class="panel-scroll">
+        <div class="content" style="max-width:900px" id="aboutContent"></div>
+      </div>
+    </div>
+
+
+  </div><!-- /.main -->
+</div><!-- /.layout -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL — Choice list viewer / editor
+══════════════════════════════════════════════════════ -->
+<div class="overlay" id="choiceOverlay" role="dialog" aria-modal="true"
+     onclick="if(event.target===this)closeChoiceModal()">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="cm-title">Choice List</div>
+        <div class="modal-sub"   id="cm-sub"></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn" id="cm-add-btn">＋ Add item</button>
+        <button class="btn-icon" onclick="closeChoiceModal()" aria-label="Close">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="cm-body"></div>
+    <div class="modal-footer">
+      <button class="btn primary" onclick="closeChoiceModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL — Edit / Add question
+══════════════════════════════════════════════════════ -->
+<div class="overlay" id="editOverlay" role="dialog" aria-modal="true"
+     onclick="if(event.target===this)closeEditModal()">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="em-title">Edit Question</div>
+        <div class="modal-sub"   id="em-sub"></div>
+      </div>
+      <button class="btn-icon" onclick="closeEditModal()" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Tab strip -->
+      <div class="modal-tabs" role="tablist">
+        <button class="modal-tab active" onclick="switchModalTab('basic')"    role="tab">Basic</button>
+        <button class="modal-tab"        onclick="switchModalTab('logic')"    role="tab">Logic</button>
+        <button class="modal-tab"        onclick="switchModalTab('labels')"   role="tab">Labels &amp; Hints</button>
+        <button class="modal-tab"        onclick="switchModalTab('advanced')" role="tab">Advanced</button>
+      </div>
+
+      <!-- ── Basic tab ── -->
+      <div class="modal-pane active" id="mp-basic" role="tabpanel">
+        <div class="form-grid">
+
+          <div class="field">
+            <label class="field-label" for="ef-type">Type <span class="req">*</span></label>
+            <select class="fi" id="ef-type" onchange="onTypeChange()">
+              <optgroup label="Questions">
+                <option>text</option>
+                <option>integer</option>
+                <option>decimal</option>
+                <option>date</option>
+                <option>time</option>
+                <option>datetime</option>
+                <option>note</option>
+                <option>calculate</option>
+                <option>barcode</option>
+                <option>acknowledge</option>
+                <option>range</option>
+                <option>rank</option>
+              </optgroup>
+              <optgroup label="Select">
+                <option value="select_one">select_one [list]</option>
+                <option value="select_multiple">select_multiple [list]</option>
+              </optgroup>
+              <optgroup label="Media">
+                <option>image</option>
+                <option>audio</option>
+                <option>video</option>
+                <option>file</option>
+              </optgroup>
+              <optgroup label="Location">
+                <option>geopoint</option>
+                <option>geotrace</option>
+                <option>geoshape</option>
+              </optgroup>
+              <optgroup label="Structure">
+                <option value="begin group">begin group</option>
+                <option value="end group">end group</option>
+                <option value="begin repeat">begin repeat</option>
+                <option value="end repeat">end repeat</option>
+              </optgroup>
+              <optgroup label="Metadata">
+                <option>start</option>
+                <option>end</option>
+                <option>deviceid</option>
+                <option>username</option>
+                <option>today</option>
+                <option>audit</option>
+                <option>hidden</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="field" id="ef-list-wrap" style="display:none">
+            <label class="field-label" for="ef-list">Choice List <span class="req">*</span></label>
+            <select class="fi" id="ef-list"></select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-name">Name <span class="req">*</span></label>
+            <input class="fi" id="ef-name" placeholder="snake_case_name" autocomplete="off"
+                   style="font-family:var(--mono)">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-appearance">Appearance</label>
+            <select class="fi" id="ef-appearance">
+              <option value="">— none —</option>
+              <optgroup label="Text">
+                <option>multiline</option><option>numbers</option><option>url</option>
+                <option>thousands-sep</option><option>printer</option><option>masked</option>
+              </optgroup>
+              <optgroup label="Select">
+                <option>autocomplete</option><option>minimal</option><option>likert</option>
+                <option>label</option><option>list-nolabel</option><option>list</option>
+                <option>columns</option><option>columns-pack</option><option>no-buttons</option>
+                <option>quick</option><option>search</option>
+              </optgroup>
+              <optgroup label="Groups">
+                <option>field-list</option><option>table-list</option>
+              </optgroup>
+              <optgroup label="Date">
+                <option>month-year</option><option>year</option><option>no-calendar</option>
+              </optgroup>
+              <optgroup label="Image">
+                <option>draw</option><option>annotate</option><option>signature</option><option>new</option>
+              </optgroup>
+              <optgroup label="Geo">
+                <option>placement-map</option><option>maps</option>
+              </optgroup>
+              <optgroup label="Range">
+                <option>vertical</option><option>rating</option><option>no-ticks</option><option>picker</option>
+              </optgroup>
+              <optgroup label="Integer">
+                <option>counter</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-required">Required</label>
+            <select class="fi" id="ef-required">
+              <option value="">— no —</option>
+              <option value="yes">yes</option>
+              <option value="no">no (explicit)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-default">Default</label>
+            <input class="fi" id="ef-default" placeholder="">
+          </div>
+
+        </div>
+      </div><!-- /#mp-basic -->
+
+      <!-- ── Logic tab ── -->
+      <div class="modal-pane" id="mp-logic" role="tabpanel">
+        <div class="form-grid" style="gap:10px">
+
+          <div class="field form-full">
+            <label class="field-label" for="ef-relevant">Relevant (skip logic)</label>
+            <input class="fi" id="ef-relevant" placeholder="${field} = 'value'"
+                   autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+          <div class="field form-full">
+            <label class="field-label" for="ef-constraint">Constraint</label>
+            <input class="fi" id="ef-constraint" placeholder=". >= 0 and . <= 100"
+                   autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+          <div class="field form-full">
+            <label class="field-label" for="ef-constraint-msg">Constraint message</label>
+            <input class="fi" id="ef-constraint-msg" placeholder="Please enter a valid value">
+          </div>
+
+          <div class="field form-full">
+            <label class="field-label" for="ef-calculation">Calculation</label>
+            <input class="fi" id="ef-calculation" placeholder="XPath expression or once(random())"
+                   autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+          <div class="field form-full">
+            <label class="field-label" for="ef-choice-filter">Choice filter</label>
+            <input class="fi" id="ef-choice-filter" placeholder="country=${country}"
+                   autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+        </div>
+      </div><!-- /#mp-logic -->
+
+      <!-- ── Labels & Hints tab ── -->
+      <div class="modal-pane" id="mp-labels" role="tabpanel">
+        <div id="ef-label-fields"></div>
+        <div id="ef-hint-fields"></div>
+        <div id="ef-cmsg-fields"></div>
+      </div>
+
+      <!-- ── Advanced tab ── -->
+      <div class="modal-pane" id="mp-advanced" role="tabpanel">
+        <div class="form-grid">
+
+          <div class="field">
+            <label class="field-label" for="ef-parameters">Parameters</label>
+            <input class="fi" id="ef-parameters" placeholder="capture-accuracy=20"
+                   autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-repeat-count">Repeat count</label>
+            <input class="fi" id="ef-repeat-count" placeholder="${household_members}"
+                   autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-read-only">Read only</label>
+            <select class="fi" id="ef-read-only">
+              <option value="">—</option>
+              <option>yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="ef-trigger">Trigger</label>
+            <input class="fi" id="ef-trigger" autocomplete="off" style="font-family:var(--mono)">
+          </div>
+
+        </div>
+      </div><!-- /#mp-advanced -->
+
+    </div><!-- /.modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEditModal()">Cancel</button>
+      <button class="btn primary" onclick="saveEdit()">💾 Save</button>
+    </div>
+  </div>
+</div><!-- /#editOverlay -->
+
+
+<!-- Toast notification -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     JavaScript modules — order matters (dependencies first)
+══════════════════════════════════════════════════════ -->
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/render.js"></script>
+<script src="js/panels.js"></script>
+<script src="js/docs.js"></script>
+<script src="js/modals.js"></script>
+
+</body>
+</html>
