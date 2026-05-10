@@ -22,27 +22,34 @@ root/
         └── favicon.svg     # App icon
 ```
 
-## Features
+## Basic Usage Workflow
 
-| Feature | Details |
-|---|---|
-| **Import** | Drag-and-drop or file picker — reads `survey`, `choices`, `settings` sheets |
-| **Survey table** | Sticky header, depth indentation, inline appearance dropdown, hover actions |
-| **Card view** | Property grid per question, embedded choice preview for selects |
-| **Groups tree** | SDG-colour-coded depth levels, group summary cards, click to jump |
-| **Choices** | Sidebar list navigation, full item table per list, add/edit/delete |
-| **Edit modal** | 4 tabs: Basic · Logic · Labels & Hints (all languages) · Advanced |
-| **Validation** | snake_case names, unique names (begin/end group pairs exempted), non-empty labels, matched group pairs, valid choice list refs |
-| **Export** | Reconstructs `.xlsx` with all original columns; validation gating with override |
-| **Docs tab** | Full XLSForm reference: Types, Appearances, Relevance, Constraints, Translations, List lookups, Additional columns |
+- Open `index.html` in Chrome, Firefox, Edge, or Safari.
 
-## Usage
+- Drag your `.xlsx` ODK form onto the upload zone, or click **Import XLS**.
 
-1. Open `index.html` in Chrome, Firefox, Edge, or Safari.
-2. Drag your `.xlsx` ODK form onto the upload zone, or click **Import XLS**.
-3. Edit questions in the table or cards view.
-4. Use **Validate** to check the form before exporting.
-5. Click **Export XLSX** to download the updated form.
+![Import XLSX](screenshots/import.png)
+
+- Add and/or edit questions in the table or cards view. To add a question, place the mouse between two question rows, and button with "INSERT" will appear.
+
+![Import XLSX](screenshots/add-question.png)
+
+- Edit question properties, including logic and related messages
+
+![Import XLSX](screenshots/add-question-logic.png)
+
+- Edit (add/remove) choice sheet and labels in the different available languages
+
+![Import XLSX](screenshots/choices.png)
+
+- Use **Validate** to check the form before exporting.
+
+![Import XLSX](screenshots/validation.png)
+
+**Note**: the validation also requires `end group` type questions to have a name, equal to the `begin group` question. This is not stricly required for ODK but it is something that we recommend for consistency and well-structure of the survey.
+
+ 
+- Click **Export XLSX** to download the updated form.
 
 ## Keyboard shortcuts
 
@@ -60,10 +67,8 @@ root/
 - **Palette**: SDG-inspired — green `#37BC7D`, UN blue `#009EDB`, yellow `#FDC745`, red `#E5243B`  
 - **External dependencies**: [SheetJS (xlsx)](https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js) loaded from CDN; Google Fonts loaded from CDN. Everything else is vanilla JS/CSS.
 
-## Browser support
 
-Any modern browser that supports ES6, CSS custom properties, and the FileReader API (Chrome 80+, Firefox 75+, Safari 14+, Edge 80+).
+## Acknowledgment
 
-## Acknoeledgment
-
-Application designed and built with the AI assistance of Claude by [Anthropic](https://anthropic.com)
+Application designed and built with the AI assistance of Claude by [Anthropic](https://anthropic.com). We acknolwedge the great
+support and service for the community of ODK.

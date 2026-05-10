@@ -191,17 +191,34 @@ function renderAbout() {
   el.innerHTML = `
 
 <div class="doc-section">
-  <h2>🌍 About</h2>
+
+  <div class="doc-section">
+  <h2>📜 The XLSForm Standard</h2>
   <p>
-    <strong>Open Data Kit (ODK)</strong> is a suite of open-source tools that enables organizations
-    to author, field, and manage mobile data collection solutions. It was originally developed in
-    2008 at the University of Washington's Computer Science &amp; Engineering department, and is
-    today maintained by <strong>Get ODK Inc.</strong> with a large global community of contributors.
+    XLSForm is an open standard for easily creating forms to be rendered digitally using Microsoft Excel
+    or Google Sheets. It was designed to be human-readable and human-writable, while still being
+    expressive enough to encode complex survey logic. XLS Form format is the standard format supported by Open Data Kit (ODK). It is also
+    compatible with other tools in the mobile data collection ecosystem, such as KoboToolbox (very much aligned with ODK) and 
+    mostly comparible with SurveyCTO.
   </p>
   <p>
-    ODK is used by thousands of organizations worldwide — from global health agencies and humanitarian
-    NGOs to government ministries and academic researchers — to collect high-quality data in
-    challenging, often offline environments.
+    An XLSForm is a <code>.xlsx</code> file (MS Excel workbook) containing up to four named sheets:
+    <code>survey</code>, <code>choices</code>, <code>settings</code>, and <code>entities</code>.
+  </p>
+  <div class="doc-tip blue">
+    📖 You can find the full XLSForm reference documentation at
+    <a href="https://xlsform.org/en/" target="_blank" rel="noopener" style="color:var(--sdg-blue)">xlsform.org/en/</a>
+  </div>
+</div>
+
+  <h2>🌍 About ODK</h2>
+  <p>
+    <strong>Open Data Kit (ODK)</strong> is a suite of open-source tools for digital data collection and data management, 
+    that enables organizations to create, host, and implement data collection studies in a robust, clean, and structured way.
+    ODK is maintained by <strong>Get ODK Inc.</strong> and has a large global community of contributors and users worldwide, especially
+    in the humanitarian, development, and research sectors. 
+    The ODK suite include ODK Central (data server for managing field teams, forms, projects, and data), 
+    ODK Collect (Android app for mobile data collection), Enketo and ODK Webforms (web form renderer).
   </p>
   <div class="doc-tip">
     💡 ODK is free and open-source. The tools, the standard, and the community are all openly
@@ -211,18 +228,18 @@ function renderAbout() {
 </div>
 
 <div class="doc-section">
-  <h2>🛠 The ODK Ecosystem</h2>
+  <h2>BRIEF GLOSSARY</h2>
   <table class="doc-table">
     <tr><th>Tool</th><th>Role</th><th>Link</th></tr>
     <tr>
       <td>ODK Central</td>
-      <td>The server — manages forms, submissions, and users via a web interface and REST API</td>
-      <td><a href="https://docs.getodk.org/central-intro/" target="_blank" rel="noopener" style="color:var(--green-dark)">docs.getodk.org</a></td>
+      <td>The data server for managing projects, forms, submissions, and users via a web interface and API access</td>
+      <td><a href="https://docs.getodk.org/central-intro/" target="_blank" rel="noopener" style="color:var(--green-dark)">docs.getodk.org/central-intro/</a></td>
     </tr>
     <tr>
       <td>ODK Collect</td>
-      <td>The Android app — allows field workers to fill forms offline and sync when connected</td>
-      <td><a href="https://play.google.com/store/apps/details?id=org.odk.collect.android" target="_blank" rel="noopener" style="color:var(--green-dark)">Play Store</a></td>
+      <td>The Android app for field data collection (also offline)</td>
+      <td><a href="https://play.google.com/store/apps/details?id=org.odk.collect.android" target="_blank" rel="noopener" style="color:var(--green-dark)">ODK Collect on Play Store</a></td>
     </tr>
     <tr>
       <td>ODK XLSForm</td>
@@ -235,54 +252,52 @@ function renderAbout() {
       <td><a href="https://github.com/XLSForm/pyxform" target="_blank" rel="noopener" style="color:var(--green-dark)">github.com/XLSForm/pyxform</a></td>
     </tr>
     <tr>
-      <td>ODK Build</td>
-      <td>A drag-and-drop form builder in the browser</td>
-      <td><a href="https://build.getodk.org" target="_blank" rel="noopener" style="color:var(--green-dark)">build.getodk.org</a></td>
-    </tr>
-    <tr>
       <td>Enketo</td>
       <td>Web-based form renderer — fills ODK forms directly in a browser</td>
       <td><a href="https://enketo.org" target="_blank" rel="noopener" style="color:var(--green-dark)">enketo.org</a></td>
+    </tr>
+    <tr>
+      <td>ODK Webforms</td>
+      <td>ODK own web-based form renderer (ongoing development - trial version available)</td>
+      <td><a href="https://getodk.org/web-forms-preview/app/index.html#/" target="_blank" rel="noopener" style="color:var(--green-dark)">getodk.org/web-forms-preview/app</a></td>
     </tr>
   </table>
 </div>
 
 <div class="doc-section">
-  <h2>📜 The XLSForm Standard</h2>
+  <h2>📋 About XLS Form UX</h2>
   <p>
-    XLSForm is an open standard for authoring forms using spreadsheet software such as Microsoft Excel
-    or Google Sheets. It was designed to be human-readable and human-writable, while still being
-    expressive enough to encode complex survey logic.
+    This tool — <strong>XLS Form UX</strong> — is an browser-basedXLSForm editor.
+    <strong>XLS Form UX</strong> is 
+    built based on our experience training organization in using ODK, and it aims to support ODK users, 
+    especially those who are new to XLSForm and prefer an visual interactive format.
   </p>
-  <p>
-    An XLSForm is a <code>.xlsx</code> file containing up to four named sheets:
-    <code>survey</code>, <code>choices</code>, <code>settings</code>, and <code>entities</code>.
-    The XLSForm toolchain (pyxform) converts this into an XForm — an XML document that conforming
-    data collection clients can render.
-  </p>
-  <div class="doc-tip blue">
-    📖 The full XLSForm specification is maintained at
-    <a href="https://xlsform.org/en/" target="_blank" rel="noopener" style="color:var(--sdg-blue)">xlsform.org/en/</a>
+  <strong>XLS Form UX</strong> has the following features:
+  <table class="doc-table">
+    <tr><td>Import</td><td>Read <code>.xlsx</code> files with survey, choices, and settings sheets</td></tr>
+    <tr><td>Survey editing</td><td>Table and card views with inline edits, drag-to-reorder, insert at any position</td></tr>
+    <tr><td>Groups</td><td>Visual depth-coloured tree of all begin/end group and repeat blocks</td></tr>
+    <tr><td>Choices</td><td>Browse and edit all choice lists; see which questions use each list</td></tr>
+    <tr><td>Validation</td><td>Checks names, labels, group matching, duplicate names, choice references</td></tr>
+    <tr><td>Export</td><td>Reconstructs a valid <code>.xlsx</code> preserving all columns and languages</td></tr>
+    <tr><td>Languages</td><td>Full support for multi-language labels, hints, and constraint messages</td></tr>
+    <tr><td>Offline</td><td>Works with no internet connection after the initial page load</td></tr>
+  </table>
+  <div class="doc-tip red">
+    XLS Form UX is an independent project, and it is not affiliated with Get ODK Inc.
+    We strongly recommend always validating your forms with the pyxform command-line tool 
+    or by uploading to ODK Central before.
   </div>
 </div>
 
 <div class="doc-section">
   <h2>🤝 Acknowledgements</h2>
-  <p>
-    This tool — <strong>XLS Form UX</strong> — is an independent, open-source XLSForm editor built
-    to make authoring and reviewing ODK forms easier and more accessible. It is not officially
-    affiliated with Get ODK Inc. or the ODK Technical Steering Committee.
-  </p>
-  <p>We gratefully acknowledge the following projects and communities:</p>
+  
+  <p>XLS Form UX would not have been possible without the contribution from the following projects and communities:</p>
   <table class="doc-table">
-    <tr><th>Project / Community</th><th>Contribution</th></tr>
     <tr>
       <td><a href="https://getodk.org" target="_blank" rel="noopener" style="color:var(--green-dark)">Get ODK Inc. &amp; the ODK community</a></td>
       <td>For creating and maintaining the ODK ecosystem, the XLSForm standard, and making all of it freely available</td>
-    </tr>
-    <tr>
-      <td><a href="https://xlsform.org" target="_blank" rel="noopener" style="color:var(--green-dark)">xlsform.org</a></td>
-      <td>For the comprehensive XLSForm specification that underpins this tool's documentation and validation rules</td>
     </tr>
     <tr>
       <td><a href="https://github.com/SheetJS/sheetjs" target="_blank" rel="noopener" style="color:var(--green-dark)">SheetJS (xlsx)</a></td>
@@ -291,10 +306,6 @@ function renderAbout() {
     <tr>
       <td><a href="https://fonts.google.com" target="_blank" rel="noopener" style="color:var(--green-dark)">Google Fonts</a></td>
       <td>For Josefin Sans and JetBrains Mono, served via Google Fonts CDN</td>
-    </tr>
-    <tr>
-      <td>The open-source humanitarian data community</td>
-      <td>For years of real-world form design experience shared through public templates, forum discussions, and documentation</td>
     </tr>
     <tr>
   <td><a href="https://anthropic.com" target="_blank" rel="noopener" style="color:var(--green-dark)">Claude by Anthropic</a></td>
@@ -307,12 +318,12 @@ function renderAbout() {
   <h2>🔗 Useful links</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:4px">
     ${[
-      ['https://getodk.org',              'Get ODK',            'Official home of the ODK ecosystem'],
-      ['https://xlsform.org/en/',         'XLSForm spec',       'Full XLSForm reference and examples'],
-      ['https://docs.getodk.org/',        'ODK Docs',           'Central, Collect, and API documentation'],
+      ['https://getodk.org',              'Official ODK Webpage', 'Learn about the different ODK tools and the community'],
+      ['https://xlsform.org/en/',         'XLSForm reference table',       'Full XLSForm features and examples'],
+      ['https://docs.getodk.org/',        'ODK Documentation',           'Official documentaion for installing and using Central, Collect, and the API documentation'],
       ['https://forum.getodk.org/',       'ODK Forum',          'Community Q&A and announcements'],
-      ['https://github.com/getodk',       'ODK on GitHub',      'Source code for all ODK tools'],
-      ['https://github.com/XLSForm/pyxform','pyxform',          'XLSForm → XForm converter (Python)'],
+      ['https://github.com/getodk',       'ODK GitHub Page',      'Source code for all ODK tools'],
+      ['https://github.com/XLSForm/pyxform','pyxform',          'XLSForm to XML converter (Python)'],
     ].map(([url, title, desc]) => `
       <a href="${url}" target="_blank" rel="noopener"
          style="display:block;background:var(--surface);border:1px solid var(--border);
@@ -326,27 +337,6 @@ function renderAbout() {
   </div>
 </div>
 
-<div class="doc-section">
-  <h2>📋 About XLS Form UX</h2>
-  <p>
-    <strong>XLS Form UX</strong> is a lightweight, browser-based editor for ODK XLSForms.
-    It runs entirely locally — no data is ever sent to a server. Everything happens in your browser.
-  </p>
-  <table class="doc-table">
-    <tr><th>Capability</th><th>Detail</th></tr>
-    <tr><td>Import</td><td>Read <code>.xlsx</code> files with survey, choices, and settings sheets</td></tr>
-    <tr><td>Survey editing</td><td>Table and card views with inline edits, drag-to-reorder, insert at any position</td></tr>
-    <tr><td>Groups</td><td>Visual depth-coloured tree of all begin/end group and repeat blocks</td></tr>
-    <tr><td>Choices</td><td>Browse and edit all choice lists; see which questions use each list</td></tr>
-    <tr><td>Validation</td><td>Checks names, labels, group matching, duplicate names, choice references</td></tr>
-    <tr><td>Export</td><td>Reconstructs a valid <code>.xlsx</code> preserving all columns and languages</td></tr>
-    <tr><td>Languages</td><td>Full support for multi-language labels, hints, and constraint messages</td></tr>
-    <tr><td>Offline</td><td>Works with no internet connection after the initial page load</td></tr>
-  </table>
-  <div class="doc-tip red">
-    ⚠️ XLS Form UX is not an official ODK product. Always validate your forms with the ODK validator
-    or by uploading to ODK Central before deploying to the field.
-  </div>
-</div>
+
 `;
 }
