@@ -161,23 +161,7 @@ function renderDocs() {
   </table>
 </div>
 
-<div class="doc-section">
-  <h2>➕ Additional columns</h2>
-  <table class="doc-table">
-    <tr><th>Column</th><th>Used in</th><th>Description</th></tr>
-    <tr><td>save_to</td><td>survey</td><td>Save field value to an Entity property</td></tr>
-    <tr><td>guidance_hint</td><td>survey</td><td>Additional info less visible than hints (translatable)</td></tr>
-    <tr><td>required_message</td><td>survey</td><td>Custom message when required value is missing (translatable)</td></tr>
-    <tr><td>read_only</td><td>survey</td><td>Expression to make question non-editable</td></tr>
-    <tr><td>big-image</td><td>survey</td><td>Image to display when label image is tapped (translatable)</td></tr>
-    <tr><td>image / audio / video</td><td>choices</td><td>Media to show with a choice option (translatable)</td></tr>
-    <tr><td>geometry</td><td>choices</td><td>Point/trace/shape for map appearance</td></tr>
-    <tr><td>public_key</td><td>settings</td><td>Public key for encrypting form instances</td></tr>
-    <tr><td>submission_url</td><td>settings</td><td>Override submission URL</td></tr>
-    <tr><td>allow_choice_duplicates</td><td>settings</td><td>Allow duplicate names within a single choice list</td></tr>
-    <tr><td>create_if / entity_id / update_if</td><td>entities</td><td>Entity creation/update conditions</td></tr>
-  </table>
-</div>
+
 `;
 }
 
