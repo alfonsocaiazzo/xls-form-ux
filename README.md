@@ -1,4 +1,4 @@
-# XLF Form UX: Web Editor Interface for XLF Form
+# XLS Form UX: Web Editor Interface for XLS Form
 
 A browser-based editor for survey in [XLSForms](https://xlsform.org/en/). Open `index.html` in any modern browser — no server or installation needed.
 
